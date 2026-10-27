@@ -3,7 +3,8 @@
    奶油纸张 + 墨色描边 + 硬投影 + 打孔式进度条 + 打字机等宽数字
    ========================================================================== */
 
-.mp-player--retro {
+.mp-player--retro,
+.mp-fs--retro {
   --mp-radius: 4px;
   --mp-pad: 20px;
   --mp-bg: #f1e2c8;
@@ -20,7 +21,9 @@
   --mp-glow: rgba(184, 69, 31, 0.28);
   --mp-shadow: 6px 6px 0 #2a2118;
   --mp-font-mono: 'Courier New', ui-monospace, Consolas, monospace;
+}
 
+.mp-player--retro {
   max-width: 364px;
   /* 细密横纹模拟纸张颗粒 */
   background:

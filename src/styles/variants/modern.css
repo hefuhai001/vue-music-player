@@ -3,7 +3,8 @@
    冷色渐变光 + 大圆角 + 圆角方形封面 + 悬浮渐变按钮
    ========================================================================== */
 
-.mp-player--modern {
+.mp-player--modern,
+.mp-fs--modern {
   --mp-radius: 28px;
   --mp-pad: 24px;
   --mp-bg: #fbfcff;
@@ -21,7 +22,9 @@
   --mp-shadow: 0 22px 50px -26px rgba(28, 48, 92, 0.42), 0 2px 8px -4px rgba(28, 48, 92, 0.18);
   --mp-font-display: 'Avenir Next', 'Segoe UI Variable Display', 'Segoe UI', 'PingFang SC',
     system-ui, sans-serif;
+}
 
+.mp-player--modern {
   background:
     radial-gradient(85% 70% at 100% 0%, rgba(47, 107, 255, 0.16), transparent 62%),
     radial-gradient(75% 60% at 0% 100%, rgba(32, 209, 190, 0.16), transparent 62%),

@@ -3,7 +3,8 @@
    纯黑网格 + 霓虹青 + 品红背光 + 等宽全大写 + 扫描线 + 切角播放键
    ========================================================================== */
 
-.mp-player--electronic {
+.mp-player--electronic,
+.mp-fs--electronic {
   --mp-radius: 2px;
   --mp-pad: 20px;
   --mp-bg: #05070a;
@@ -21,7 +22,9 @@
   --mp-shadow: 0 22px 60px -28px rgba(34, 245, 200, 0.4);
   --mp-font: 'SFMono-Regular', ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
   --mp-font-display: 'SFMono-Regular', ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+}
 
+.mp-player--electronic {
   max-width: 364px;
   background:
     radial-gradient(90% 70% at 100% 0%, rgba(255, 46, 136, 0.14), transparent 60%),

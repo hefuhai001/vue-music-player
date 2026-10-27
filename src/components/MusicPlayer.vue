@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import PlayerSlider from './PlayerSlider.vue'
 import PlayerPlaylist from './PlayerPlaylist.vue'
+import PlayerFullscreen from './PlayerFullscreen.vue'
 import { useAudioPlayer } from '../composables/useAudioPlayer'
 import { clamp01, formatTime } from '../utils/format'
 import type { MusicPlayerProps, Track } from '../types'
@@ -120,6 +121,54 @@ function onSelectTrack(index: number) {
   selectTrack(index)
 }
 
+/* ----------------------------- 全屏模式 ----------------------------- */
+
+const fullscreenOpen = ref(false)
+const fullscreenRef = ref<InstanceType<typeof PlayerFullscreen> | null>(null)
+
+async function enterFullscreen() {
+  if (fullscreenOpen.value) return
+  fullscreenOpen.value = true
+  await nextTick()
+
+  const el = fullscreenRef.value?.rootEl
+  if (!el || document.fullscreenElement) return
+  try {
+    await el.requestFullscreen()
+  } catch {
+    /* 浏览器拒绝原生全屏时退化为整页覆盖层 */
+  }
+}
+
+async function exitFullscreen() {
+  fullscreenOpen.value = false
+  if (document.fullscreenElement) {
+    try {
+      await document.exitFullscreen()
+    } catch {
+      /* noop */
+    }
+  }
+}
+
+function toggleFullscreen() {
+  if (fullscreenOpen.value) void exitFullscreen()
+  else void enterFullscreen()
+}
+
+/** 用户按 Esc 退出原生全屏时同步关闭覆盖层 */
+function handleFullscreenChange() {
+  if (!document.fullscreenElement && fullscreenOpen.value) {
+    fullscreenOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('fullscreenchange', handleFullscreenChange))
+onBeforeUnmount(() => {
+  document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  if (document.fullscreenElement) void document.exitFullscreen()
+})
+
 defineExpose({
   audioEl,
   tracks,
@@ -144,6 +193,10 @@ defineExpose({
   toggleMute,
   cycleLoopMode,
   selectTrack,
+  fullscreenOpen,
+  enterFullscreen,
+  exitFullscreen,
+  toggleFullscreen,
 })
 </script>
 
@@ -151,9 +204,30 @@ defineExpose({
   <div class="mp-player" :class="rootClass" :style="rootStyle">
     <header class="mp-head">
       <span class="mp-eyebrow">{{ label }}</span>
-      <span class="mp-equalizer" :class="{ 'is-active': playing }" aria-hidden="true">
-        <i v-for="n in 5" :key="n" :style="{ '--mp-bar': n }" />
-      </span>
+      <div class="mp-head__tools">
+        <span class="mp-equalizer" :class="{ 'is-active': playing }" aria-hidden="true">
+          <i v-for="n in 5" :key="n" :style="{ '--mp-bar': n }" />
+        </span>
+        <button
+          type="button"
+          class="mp-btn mp-btn--bare mp-fs-toggle"
+          title="全屏播放"
+          aria-label="全屏播放"
+          :disabled="!hasTracks"
+          @click="toggleFullscreen"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M4 9V4h5M20 15v5h-5M20 9V4h-5M4 15v5h5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
     </header>
 
     <section class="mp-hero">
@@ -346,6 +420,34 @@ defineExpose({
       :tracks="tracks"
       :current-index="currentIndex"
       @select="onSelectTrack"
+    />
+
+    <PlayerFullscreen
+      v-if="fullscreenOpen"
+      ref="fullscreenRef"
+      :variant="variant"
+      :label="label"
+      :title="title"
+      :artist="artist"
+      :album="album"
+      :cover="cover"
+      :initial="initial"
+      :lyric="currentTrack?.lyric"
+      :playing="playing"
+      :loading="loading"
+      :current-time="currentTime"
+      :duration="totalDuration"
+      :buffered="buffered"
+      :volume="volumeRatio"
+      :muted="muted"
+      :has-tracks="hasTracks"
+      @close="exitFullscreen"
+      @toggle="toggle"
+      @prev="prev"
+      @next="next"
+      @seek="seek"
+      @volume="onVolumeInput"
+      @mute="toggleMute"
     />
   </div>
 </template>

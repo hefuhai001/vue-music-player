@@ -3,7 +3,8 @@
    纯白纸面 + 发丝线 + 描边圆按钮 + 1px 进度条，只保留必要信息
    ========================================================================== */
 
-.mp-player--minimal {
+.mp-player--minimal,
+.mp-fs--minimal {
   --mp-radius: 2px;
   --mp-pad: 22px;
   --mp-bg: #ffffff;
@@ -21,7 +22,9 @@
   --mp-shadow: none;
   --mp-font-display: 'Avenir Next', 'Segoe UI Variable Text', 'Segoe UI', 'PingFang SC',
     system-ui, sans-serif;
+}
 
+.mp-player--minimal {
   max-width: 336px;
   border-color: var(--mp-line);
   box-shadow: none;

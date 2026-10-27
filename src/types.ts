@@ -13,6 +13,8 @@ export interface Track {
   cover?: string
   /** 已知时长（秒），未提供时由 audio 元数据自动获取 */
   duration?: number
+  /** LRC 格式歌词文本，用于全屏模式逐行高亮展示 */
+  lyric?: string
 }
 
 /**

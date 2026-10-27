@@ -4,7 +4,8 @@
    所有皮肤都通过 --mp-* 变量覆盖，宿主项目也可以直接改这些变量。
    ========================================================================== */
 
-.mp-player {
+.mp-player,
+.mp-fs {
   /* 字体：优先使用系统已装的差异化字体，避免引入外部字体请求 */
   --mp-font: 'Avenir Next', 'Segoe UI Variable Text', 'Segoe UI', 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
@@ -53,7 +54,10 @@
 
 .mp-player *,
 .mp-player *::before,
-.mp-player *::after {
+.mp-player *::after,
+.mp-fs *,
+.mp-fs *::before,
+.mp-fs *::after {
   box-sizing: border-box;
 }
 
@@ -64,6 +68,23 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 18px;
+}
+
+.mp-head__tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mp-fs-toggle {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+}
+
+.mp-fs-toggle svg {
+  width: 15px;
+  height: 15px;
 }
 
 .mp-eyebrow {
@@ -573,7 +594,10 @@
 @media (prefers-reduced-motion: reduce) {
   .mp-player *,
   .mp-player *::before,
-  .mp-player *::after {
+  .mp-player *::after,
+  .mp-fs *,
+  .mp-fs *::before,
+  .mp-fs *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

@@ -207,6 +207,44 @@ const DEFS: DemoDef[] = [
   },
 ]
 
+const LYRICS: Record<number, string[]> = {
+  1: [
+    '灯光落在琥珀色的墙',
+    '旧唱片转着去年夏天',
+    '我把窗轻轻推开一点',
+    '让风替你回答',
+    '房间很慢 时间很软',
+    '我们都没有说话',
+  ],
+  2: [
+    '夜行的列车穿过隧道',
+    '窗外的城市碎成光点',
+    '我把耳机又调响一点',
+    '盖过心跳的节拍',
+    '下一站是哪一站',
+    '其实并不重要',
+  ],
+  3: [
+    '雨敲在窗上 像旧旋律',
+    '一杯热茶 慢慢变凉',
+    '有些话留在喉咙里',
+    '就这样也很好',
+  ],
+}
+
+/** 把若干行文本均分到曲目时长上，生成 LRC */
+function toLrc(lines: string[], seconds: number): string {
+  if (!lines.length) return ''
+  const intro = 1.6
+  const step = Math.max(1.2, (seconds - intro - 2) / lines.length)
+  const stamp = (time: number) => {
+    const m = String(Math.floor(time / 60)).padStart(2, '0')
+    const s = (time % 60).toFixed(2).padStart(5, '0')
+    return `[${m}:${s}]`
+  }
+  return lines.map((text, i) => `${stamp(intro + i * step)}${text}`).join('\n')
+}
+
 export function createDemoTracks(): Track[] {
   return DEFS.map((def) => ({
     id: def.id,
@@ -216,5 +254,6 @@ export function createDemoTracks(): Track[] {
     src: URL.createObjectURL(encodeWav(renderLoop(def))),
     cover: createCover(def.cover[0], def.cover[1], def.title.slice(0, 1)),
     duration: def.seconds,
+    lyric: toLrc(LYRICS[def.id] ?? [], def.seconds),
   }))
 }

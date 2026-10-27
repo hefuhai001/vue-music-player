@@ -1,0 +1,399 @@
+/* ==========================================================================
+   fullscreen.css · 全屏播放层
+   最后一个引入：用同特异性覆盖各皮肤落在 .mp-player--* 上的装饰属性
+   （边框 / 硬投影 / 背景），只继承它们定义的 --mp-* 主题变量。
+   ========================================================================== */
+
+.mp-fs {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  padding: clamp(18px, 3.4vh, 40px) clamp(20px, 4.4vw, 64px);
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(110% 80% at 12% 0%, var(--mp-accent-weak), transparent 62%),
+    radial-gradient(90% 70% at 100% 100%, var(--mp-accent-weak), transparent 66%),
+    var(--mp-bg);
+  color: var(--mp-text);
+  font-family: var(--mp-font);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow: hidden;
+  outline: none;
+  box-shadow: none;
+  animation: mp-fs-in 0.36s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* ---------------------------- 背景：封面模糊 + 律动 ---------------------------- */
+
+.mp-fs__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mp-fs__backdrop-img {
+  position: absolute;
+  inset: -14%;
+  background-position: center;
+  background-size: cover;
+  filter: blur(70px) saturate(1.35);
+  opacity: 0.32;
+  animation: mp-fs-drift 28s ease-in-out infinite alternate;
+}
+
+.mp-fs__bars {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(2px, 0.45vw, 9px);
+  height: 30%;
+  padding: 0 clamp(6px, 2.5vw, 40px);
+  opacity: 0.3;
+  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent);
+  mask-image: linear-gradient(to top, #000 40%, transparent);
+}
+
+.mp-fs__bars i {
+  flex: 1 1 0;
+  height: 100%;
+  border-radius: 99px 99px 0 0;
+  background: linear-gradient(to top, var(--mp-accent), transparent 92%);
+  transform: scaleY(0.08);
+  transform-origin: bottom;
+  animation: mp-fs-bar 0.9s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.mp-fs.is-playing .mp-fs__bars i {
+  animation-play-state: running;
+}
+
+/* ---------------------------- 顶部信息 ---------------------------- */
+
+.mp-fs__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mp-fs__eyebrow {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--mp-dim);
+}
+
+.mp-fs__title {
+  margin: 8px 0 0;
+  font-family: var(--mp-font-display);
+  font-size: clamp(22px, 3vw, 40px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.mp-fs__sub {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--mp-dim);
+}
+
+.mp-fs__album {
+  color: var(--mp-dim-2);
+}
+
+.mp-fs__close {
+  flex: 0 0 auto;
+}
+
+/* ---------------------------- 主体：封面 + 歌词 ---------------------------- */
+
+.mp-fs__body {
+  display: grid;
+  grid-template-columns: minmax(190px, 30%) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(26px, 5.5vw, 84px);
+  min-height: 0;
+  padding: clamp(14px, 3vh, 34px) 0;
+}
+
+.mp-fs__visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: min(100%, 36vh, 340px);
+  aspect-ratio: 1;
+}
+
+.mp-fs__ring {
+  position: absolute;
+  inset: -9%;
+  border-radius: 50%;
+  border: 1px solid var(--mp-line);
+  background: radial-gradient(circle, transparent 56%, var(--mp-accent-weak) 100%);
+  animation: mp-fs-breathe 3.6s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.mp-fs.is-playing .mp-fs__ring {
+  animation-play-state: running;
+}
+
+.mp-fs__disc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 86%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #2b2420 0 24%, #16110f 25% 64%, #221a16 65% 100%);
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9), 0 0 0 1px var(--mp-line);
+  animation: mp-spin 22s linear infinite;
+  animation-play-state: paused;
+}
+
+.mp-fs__disc.is-spinning {
+  animation-play-state: running;
+}
+
+.mp-fs__art {
+  width: 64%;
+  height: 64%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mp-fs__art--fallback {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(150deg, var(--mp-accent), rgba(0, 0, 0, 0.55));
+  color: var(--mp-on-accent);
+  font-family: var(--mp-font-display);
+  font-size: clamp(26px, 4.4vw, 48px);
+  font-weight: 600;
+}
+
+.mp-fs__lyrics {
+  position: relative;
+  height: 100%;
+  max-height: min(58vh, 520px);
+  padding: 0 6px;
+  overflow: hidden;
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 16%, #000 84%, transparent);
+}
+
+/* 上下留出半屏空间，让任意一行都能被滚动到垂直居中 */
+.mp-fs__lyrics::before,
+.mp-fs__lyrics::after {
+  content: '';
+  display: block;
+  height: 42%;
+}
+
+.mp-fs__line {
+  margin: 0;
+  padding: 0.42em 0.2em;
+  font-size: clamp(15px, 1.5vw, 19px);
+  line-height: 1.5;
+  color: var(--mp-dim-2);
+  cursor: pointer;
+  transition: color 0.32s ease, opacity 0.32s ease;
+}
+
+.mp-fs__line:hover {
+  color: var(--mp-dim);
+}
+
+.mp-fs__line.is-past {
+  color: var(--mp-dim);
+  opacity: 0.62;
+}
+
+.mp-fs__line.is-active {
+  color: var(--mp-text);
+  font-weight: 600;
+  text-shadow: 0 0 28px var(--mp-glow);
+}
+
+.mp-fs__empty {
+  margin: 0;
+  padding: 28px 0;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--mp-dim-2);
+}
+
+/* ---------------------------- 底部控制 ---------------------------- */
+
+.mp-fs__foot {
+  padding-top: 4px;
+}
+
+.mp-fs__times {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2px;
+  font-family: var(--mp-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--mp-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.mp-fs__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: clamp(8px, 1.6vh, 18px);
+}
+
+.mp-fs__transport {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 20px);
+}
+
+.mp-fs__transport .mp-btn--sm {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--mp-dim);
+}
+
+.mp-fs__transport .mp-btn--sm:hover:not(:disabled) {
+  color: var(--mp-text);
+  background: var(--mp-hover);
+}
+
+.mp-fs__transport .mp-btn--primary {
+  width: 64px;
+  height: 64px;
+}
+
+.mp-fs__transport .mp-btn--primary svg {
+  width: 26px;
+  height: 26px;
+}
+
+.mp-fs__volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(210px, 24vw);
+}
+
+.mp-fs__volume .mp-volume {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ---------------------------- 窄屏 ---------------------------- */
+
+@media (max-width: 860px) {
+  .mp-fs__body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 16px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .mp-fs__visual {
+    width: min(46vw, 190px);
+  }
+
+  .mp-fs__lyrics {
+    width: 100%;
+    max-height: 32vh;
+  }
+
+  .mp-fs__line {
+    font-size: 15px;
+  }
+
+  .mp-fs__volume {
+    display: none;
+  }
+
+  .mp-fs__controls {
+    justify-content: center;
+  }
+}
+
+@media (max-height: 560px) and (min-width: 861px) {
+  .mp-fs__visual {
+    width: min(100%, 28vh, 240px);
+  }
+
+  .mp-fs__lyrics {
+    max-height: 46vh;
+  }
+}
+
+/* ---------------------------- 动效 ---------------------------- */
+
+@keyframes mp-fs-in {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mp-fs-bar {
+  0%,
+  100% {
+    transform: scaleY(0.12);
+  }
+  34% {
+    transform: scaleY(0.72);
+  }
+  56% {
+    transform: scaleY(0.34);
+  }
+  78% {
+    transform: scaleY(0.95);
+  }
+}
+
+@keyframes mp-fs-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes mp-fs-drift {
+  from {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.16) translate3d(-2%, -2%, 0);
+  }
+}
