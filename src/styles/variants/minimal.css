@@ -1,0 +1,228 @@
+/* ==========================================================================
+   minimal · 极简
+   纯白纸面 + 发丝线 + 描边圆按钮 + 1px 进度条，只保留必要信息
+   ========================================================================== */
+
+.mp-player--minimal {
+  --mp-radius: 2px;
+  --mp-pad: 22px;
+  --mp-bg: #ffffff;
+  --mp-text: #0a0a0a;
+  --mp-dim: rgba(10, 10, 10, 0.5);
+  --mp-dim-2: rgba(10, 10, 10, 0.28);
+  --mp-line: rgba(10, 10, 10, 0.1);
+  --mp-track: rgba(10, 10, 10, 0.1);
+  --mp-buffer: rgba(10, 10, 10, 0.18);
+  --mp-hover: rgba(10, 10, 10, 0.05);
+  --mp-accent: #0a0a0a;
+  --mp-on-accent: #ffffff;
+  --mp-accent-weak: rgba(10, 10, 10, 0.06);
+  --mp-glow: rgba(10, 10, 10, 0.2);
+  --mp-shadow: none;
+  --mp-font-display: 'Avenir Next', 'Segoe UI Variable Text', 'Segoe UI', 'PingFang SC',
+    system-ui, sans-serif;
+
+  max-width: 336px;
+  border-color: var(--mp-line);
+  box-shadow: none;
+}
+
+.mp-player--minimal .mp-head {
+  margin-bottom: 22px;
+}
+
+.mp-player--minimal .mp-equalizer {
+  display: none;
+}
+
+.mp-player--minimal .mp-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--mp-dim-2);
+}
+
+/* 小圆封面，不做旋转 */
+.mp-player--minimal .mp-disc {
+  width: 46px;
+  height: 46px;
+  background: rgba(10, 10, 10, 0.06);
+  animation: none;
+  box-shadow: none;
+}
+
+.mp-player--minimal .mp-disc__grooves {
+  display: none;
+}
+
+.mp-player--minimal .mp-disc__art {
+  width: 46px;
+  height: 46px;
+  box-shadow: none;
+}
+
+.mp-player--minimal .mp-disc__art--fallback {
+  background: #0a0a0a;
+  font-size: 16px;
+}
+
+.mp-player--minimal .mp-hero {
+  gap: 14px;
+}
+
+.mp-player--minimal .mp-title {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.mp-player--minimal .mp-sub {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--mp-dim-2);
+}
+
+/* 1px 进度线 */
+.mp-player--minimal .mp-progress {
+  margin-top: 24px;
+}
+
+.mp-player--minimal .mp-slider {
+  padding: 10px 0;
+}
+
+.mp-player--minimal .mp-slider__rail {
+  height: 2px;
+  border-radius: 0;
+}
+
+.mp-player--minimal .mp-slider__buffer {
+  border-radius: 0;
+}
+
+.mp-player--minimal .mp-slider__fill {
+  border-radius: 0;
+  background: var(--mp-text);
+  box-shadow: none;
+}
+
+.mp-player--minimal .mp-slider__thumb {
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  background: var(--mp-text);
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+  box-shadow: none;
+}
+
+.mp-player--minimal .mp-slider:hover .mp-slider__thumb,
+.mp-player--minimal .mp-slider.is-dragging .mp-slider__thumb {
+  box-shadow: 0 0 0 4px rgba(10, 10, 10, 0.08);
+}
+
+.mp-player--minimal .mp-times {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--mp-dim-2);
+}
+
+/* 描边播放键 */
+.mp-player--minimal .mp-controls {
+  margin-top: 20px;
+}
+
+.mp-player--minimal .mp-btn--sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  color: var(--mp-dim);
+}
+
+.mp-player--minimal .mp-btn--sm:hover:not(:disabled) {
+  background: transparent;
+  color: var(--mp-text);
+}
+
+.mp-player--minimal .mp-btn--sm.is-active {
+  color: var(--mp-text);
+}
+
+.mp-player--minimal .mp-btn--primary {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--mp-text);
+  background: transparent;
+  color: var(--mp-text);
+  box-shadow: none;
+}
+
+.mp-player--minimal .mp-btn--primary svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mp-player--minimal .mp-btn--primary:hover:not(:disabled) {
+  transform: none;
+  background: var(--mp-text);
+  color: var(--mp-on-accent);
+}
+
+.mp-player--minimal .mp-btn--primary:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* 底部 */
+.mp-player--minimal .mp-foot {
+  margin-top: 18px;
+  border-top-color: rgba(10, 10, 10, 0.08);
+}
+
+.mp-player--minimal .mp-btn--bare {
+  color: var(--mp-dim-2);
+}
+
+.mp-player--minimal .mp-btn--bare:hover {
+  color: var(--mp-text);
+}
+
+.mp-player--minimal .mp-volume .mp-slider__rail {
+  height: 1px;
+}
+
+.mp-player--minimal .mp-volume .mp-slider__thumb {
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+}
+
+.mp-player--minimal .mp-count {
+  font-size: 10px;
+  color: var(--mp-dim-2);
+}
+
+/* 列表 */
+.mp-player--minimal .mp-playlist {
+  border-top-color: rgba(10, 10, 10, 0.08);
+}
+
+.mp-player--minimal .mp-playlist__item {
+  padding: 7px 6px;
+  border-radius: 2px;
+  font-size: 12.5px;
+}
+
+.mp-player--minimal .mp-playlist__item.is-active {
+  background: transparent;
+  color: var(--mp-text);
+}
+
+.mp-player--minimal .mp-playlist__item.is-active .mp-playlist__title {
+  color: var(--mp-text);
+  font-weight: 600;
+}
+
+.mp-player--minimal .mp-playlist__item.is-active .mp-playlist__index {
+  color: var(--mp-text);
+}

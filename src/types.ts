@@ -23,8 +23,14 @@ export interface Track {
  */
 export type LoopMode = 'list' | 'single' | 'none'
 
-/** 主题 */
-export type PlayerTheme = 'dark' | 'light'
+/**
+ * 视觉风格
+ * - `modern`：现代玻璃拟态（冷色渐变 + 大圆角）
+ * - `retro`：复古 70s 唱片（奶油纸 + 墨色描边 + 硬投影）
+ * - `minimal`：极简（纯白 + 发丝线 + 描边按钮）
+ * - `electronic`：电子 HUD（纯黑网格 + 霓虹青 + 扫描线）
+ */
+export type PlayerVariant = 'modern' | 'retro' | 'minimal' | 'electronic'
 
 export interface MusicPlayerProps {
   /** 播放列表 */
@@ -39,8 +45,8 @@ export interface MusicPlayerProps {
   loop?: LoopMode
   /** 是否默认展开播放列表 */
   showPlaylist?: boolean
-  /** 主题 */
-  theme?: PlayerTheme
+  /** 视觉风格，默认 'modern' */
+  variant?: PlayerVariant
   /** 顶部小标题 */
   label?: string
   /** 强调色，等价于覆盖 CSS 变量 --mp-accent */

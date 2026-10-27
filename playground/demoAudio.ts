@@ -172,7 +172,7 @@ const DEFS: DemoDef[] = [
       [10, 14, 17],
     ],
     seconds: 26,
-    cover: ['#e5a44c', '#7d3f18'],
+    cover: ['#9aa1ad', '#3a3f47'],
   },
   {
     id: 2,

@@ -1,0 +1,231 @@
+/* ==========================================================================
+   retro · 复古 70s 唱片
+   奶油纸张 + 墨色描边 + 硬投影 + 打孔式进度条 + 打字机等宽数字
+   ========================================================================== */
+
+.mp-player--retro {
+  --mp-radius: 4px;
+  --mp-pad: 20px;
+  --mp-bg: #f1e2c8;
+  --mp-text: #2a2118;
+  --mp-dim: rgba(42, 33, 24, 0.62);
+  --mp-dim-2: rgba(42, 33, 24, 0.42);
+  --mp-line: rgba(42, 33, 24, 0.34);
+  --mp-track: rgba(42, 33, 24, 0.16);
+  --mp-buffer: rgba(42, 33, 24, 0.3);
+  --mp-hover: rgba(42, 33, 24, 0.07);
+  --mp-accent: #b8451f;
+  --mp-on-accent: #fdf3e2;
+  --mp-accent-weak: rgba(184, 69, 31, 0.12);
+  --mp-glow: rgba(184, 69, 31, 0.28);
+  --mp-shadow: 6px 6px 0 #2a2118;
+  --mp-font-mono: 'Courier New', ui-monospace, Consolas, monospace;
+
+  max-width: 364px;
+  /* 细密横纹模拟纸张颗粒 */
+  background:
+    repeating-linear-gradient(0deg, rgba(42, 33, 24, 0.04) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 100% at 0% 0%, #f8ecd6, #eedec0 68%, #e6d3b2);
+  border: 2px solid #2a2118;
+  box-shadow: var(--mp-shadow);
+}
+
+.mp-player--retro .mp-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  color: rgba(42, 33, 24, 0.55);
+}
+
+.mp-player--retro .mp-eyebrow::after {
+  content: ' · 33⅓';
+  letter-spacing: 0.08em;
+}
+
+/* 黑胶：粗墨边 + 米色唱片标 */
+.mp-player--retro .mp-disc {
+  width: 82px;
+  height: 82px;
+  background: repeating-radial-gradient(circle at 50% 50%, #1f1912 0 1.5px, #2a2118 1.5px 3px);
+  border: 2px solid #2a2118;
+  animation-duration: 9s;
+  box-shadow: 3px 3px 0 rgba(42, 33, 24, 0.85);
+}
+
+.mp-player--retro .mp-disc__grooves {
+  display: none;
+}
+
+.mp-player--retro .mp-disc__art {
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 0 0 2px #f1e2c8, 0 0 0 3px #2a2118;
+}
+
+.mp-player--retro .mp-disc.is-spinning::after {
+  display: none;
+}
+
+.mp-player--retro .mp-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.mp-player--retro .mp-sub {
+  margin-top: 6px;
+  font-family: var(--mp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* 进度条：磁带计数器质感 */
+.mp-player--retro .mp-progress {
+  margin-top: 18px;
+}
+
+.mp-player--retro .mp-slider {
+  padding: 11px 0;
+}
+
+.mp-player--retro .mp-slider__rail {
+  height: 10px;
+  border: 1px solid #2a2118;
+  border-radius: 1px;
+  background: repeating-linear-gradient(
+      90deg,
+      rgba(42, 33, 24, 0.16) 0 1px,
+      transparent 1px 7px
+    ),
+    #ecdcbe;
+}
+
+.mp-player--retro .mp-slider__buffer {
+  border-radius: 0;
+}
+
+.mp-player--retro .mp-slider__fill {
+  border-radius: 0;
+  background: repeating-linear-gradient(90deg, #b8451f 0 5px, #a03c1b 5px 10px);
+  box-shadow: none;
+}
+
+.mp-player--retro .mp-slider__thumb {
+  width: 10px;
+  height: 18px;
+  margin-left: -5px;
+  border-radius: 1px;
+  background: #2a2118;
+  opacity: 1;
+  transform: translateY(-50%);
+  box-shadow: none;
+}
+
+.mp-player--retro .mp-slider:hover .mp-slider__thumb,
+.mp-player--retro .mp-slider.is-dragging .mp-slider__thumb {
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 4px rgba(42, 33, 24, 0.12);
+}
+
+.mp-player--retro .mp-times {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* 控制区：机械按键 */
+.mp-player--retro .mp-controls {
+  margin-top: 18px;
+}
+
+.mp-player--retro .mp-btn--sm {
+  border-radius: 2px;
+  color: rgba(42, 33, 24, 0.55);
+}
+
+.mp-player--retro .mp-btn--sm:hover:not(:disabled) {
+  background: rgba(42, 33, 24, 0.08);
+  color: #2a2118;
+}
+
+.mp-player--retro .mp-btn--primary {
+  width: 56px;
+  height: 46px;
+  border: 2px solid #2a2118;
+  border-radius: 6px;
+  background: var(--mp-accent);
+  color: var(--mp-on-accent);
+  box-shadow: 3px 3px 0 #2a2118;
+}
+
+.mp-player--retro .mp-btn--primary:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #2a2118;
+}
+
+.mp-player--retro .mp-btn--primary:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 #2a2118;
+}
+
+.mp-player--retro .mp-equalizer i {
+  width: 4px;
+  border-radius: 0;
+  background: rgba(42, 33, 24, 0.28);
+}
+
+.mp-player--retro .mp-equalizer.is-active i {
+  background: var(--mp-accent);
+}
+
+/* 底部 */
+.mp-player--retro .mp-foot {
+  border-top: 1px dashed rgba(42, 33, 24, 0.45);
+}
+
+.mp-player--retro .mp-btn--bare {
+  border-radius: 2px;
+  color: rgba(42, 33, 24, 0.55);
+}
+
+.mp-player--retro .mp-btn--bare:hover {
+  color: #2a2118;
+}
+
+.mp-player--retro .mp-volume .mp-slider__rail {
+  height: 4px;
+  border-radius: 1px;
+  border-color: rgba(42, 33, 24, 0.5);
+}
+
+.mp-player--retro .mp-count {
+  letter-spacing: 0.1em;
+}
+
+/* 列表 */
+.mp-player--retro .mp-playlist {
+  border-top: 1px dashed rgba(42, 33, 24, 0.45);
+}
+
+.mp-player--retro .mp-playlist__item {
+  border-radius: 2px;
+  font-size: 12.5px;
+}
+
+.mp-player--retro .mp-playlist__item.is-active {
+  background: rgba(184, 69, 31, 0.1);
+}
+
+.mp-player--retro .mp-playlist__item.is-active .mp-playlist__title {
+  color: #2a2118;
+  font-weight: 700;
+}
+
+.mp-player--retro .mp-playlist__index {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.mp-player--retro .mp-playlist__artist {
+  font-family: var(--mp-font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+}

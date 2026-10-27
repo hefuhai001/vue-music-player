@@ -8,7 +8,7 @@ export { MusicPlayer, PlayerSlider, PlayerPlaylist }
 export { useAudioPlayer } from './composables/useAudioPlayer'
 
 export type { AudioPlayer, UseAudioPlayerOptions } from './composables/useAudioPlayer'
-export type { LoopMode, MusicPlayerProps, PlayerTheme, Track } from './types'
+export type { LoopMode, MusicPlayerProps, PlayerVariant, Track } from './types'
 
 /** 全局注册插件：app.use(VueMusicPlayer) */
 export const VueMusicPlayer: Plugin = {

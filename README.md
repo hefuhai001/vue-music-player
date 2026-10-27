@@ -57,7 +57,7 @@ createApp(App).use(VueMusicPlayer).mount('#app')
 | `muted` | `boolean` | `false` | 初始静音 |
 | `loop` | `'list' \| 'single' \| 'none'` | `'list'` | 循环模式 |
 | `showPlaylist` | `boolean` | `false` | 是否默认展开列表 |
-| `theme` | `'dark' \| 'light'` | `'dark'` | 主题 |
+| `variant` | `'modern' \| 'retro' \| 'minimal' \| 'electronic'` | `'modern'` | 视觉风格 |
 | `label` | `string` | `'Now playing'` | 顶部小标题 |
 | `accent` | `string` | — | 强调色，等价于覆盖 `--mp-accent` |
 
@@ -113,9 +113,25 @@ const player = ref<InstanceType<typeof MusicPlayer> | null>(null)
 
 同时导出 `useAudioPlayer(options)` 组合式函数，可在自有 UI 里复用播放内核。
 
+## 四种风格
+
+| `variant` | 视觉语言 | 关键特征 |
+| --- | --- | --- |
+| `modern` | 现代玻璃拟态 | 冷色渐变光、28px 大圆角、圆角方形封面、蓝色渐变按钮、播放时外圈扩散 |
+| `retro` | 复古 70s 唱片 | 奶油纸张纹理、2px 墨色描边、6px 硬投影、机械按键、磁带式条纹进度条、打字机数字 |
+| `minimal` | 极简 | 纯白纸面、发丝分隔线、1px 进度条、描边圆形播放键、隐藏频谱条 |
+| `electronic` | 电子 HUD | 纯黑网格、霓虹青、品红背光、扫描线、切角播放键、等宽全大写、闪烁光标 |
+
+```vue
+<MusicPlayer :tracks="tracks" variant="retro" />
+<MusicPlayer :tracks="tracks" variant="electronic" show-playlist />
+```
+
+> 四套皮肤共用同一份 DOM 与播放内核，只通过 CSS 变量与皮肤类覆盖实现，切换不产生额外 JS。
+
 ## 主题定制
 
-全部视觉参数都是 CSS 变量，在任意祖先节点覆盖即可：
+全部视觉参数都是 CSS 变量，在任意祖先节点覆盖即可（优先级高于皮肤默认值）：
 
 ```css
 .my-layout {

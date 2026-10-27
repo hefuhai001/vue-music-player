@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { MusicPlayer } from '../src'
+import type { PlayerVariant } from '../src'
 import { demoTracks } from './tracks'
 
 const events = ref<string[]>([])
-const darkPlayer = ref<InstanceType<typeof MusicPlayer> | null>(null)
+
+const variants: { value: PlayerVariant; name: string; desc: string }[] = [
+  { value: 'modern', name: '现代', desc: '玻璃拟态 · 冷色渐变光' },
+  { value: 'retro', name: '复古', desc: '70s 唱片 · 奶油纸与硬投影' },
+  { value: 'minimal', name: '简约', desc: '纯白纸面 · 发丝线' },
+  { value: 'electronic', name: '电子', desc: 'HUD 霓虹 · 网格与扫描线' },
+]
 
 function log(name: string, payload?: unknown) {
   const time = new Date().toLocaleTimeString('zh-CN', { hour12: false })
@@ -15,33 +22,31 @@ function log(name: string, payload?: unknown) {
 
 <template>
   <main class="stage">
-    <div class="stage__head">
+    <header class="stage__head">
       <p class="stage__eyebrow">Vue 3 component · npm ready</p>
       <h1 class="stage__title">Music Player</h1>
       <p class="stage__desc">
-        深色 / 浅色双主题，唱片随播放旋转，进度与音量均为零依赖自绘滑块。
+        同一套播放内核，四种视觉语言。通过 <code>variant</code> 切换，全部由 CSS 变量驱动。
       </p>
-    </div>
+    </header>
 
-    <div class="stage__players">
-      <MusicPlayer
-        ref="darkPlayer"
-        :tracks="demoTracks"
-        show-playlist
-        @change="log('change', $event?.title)"
-        @play="log('play')"
-        @pause="log('pause')"
-        @ended="log('ended')"
-      />
-
-      <MusicPlayer
-        :tracks="demoTracks"
-        theme="light"
-        accent="#2f6f6a"
-        label="Light theme"
-        :volume="0.5"
-      />
-    </div>
+    <section class="grid">
+      <figure v-for="item in variants" :key="item.value" class="cell">
+        <figcaption class="cell__cap">
+          <span class="cell__name">{{ item.name }}</span>
+          <span class="cell__desc">{{ item.desc }}</span>
+        </figcaption>
+        <MusicPlayer
+          :tracks="demoTracks"
+          :variant="item.value"
+          :label="item.value.toUpperCase()"
+          :show-playlist="false"
+          @change="log(`${item.value}: change`, $event?.title)"
+          @play="log(`${item.value}: play`)"
+          @pause="log(`${item.value}: pause`)"
+        />
+      </figure>
+    </section>
 
     <div class="stage__panel">
       <div class="stage__panel-head">
@@ -53,11 +58,6 @@ function log(name: string, payload?: unknown) {
         <li v-if="!events.length" class="is-empty">播放一下试试…</li>
       </ul>
     </div>
-
-    <p class="stage__hint">
-      命令式调用：<code>ref.play()</code> / <code>ref.next()</code> /
-      <code>ref.seek(30)</code> / <code>ref.setVolume(0.3)</code>
-    </p>
   </main>
 </template>
 
@@ -78,7 +78,7 @@ body {
 }
 
 .stage {
-  max-width: 960px;
+  max-width: 1020px;
   margin: 0 auto;
   padding: 72px 24px 96px;
 }
@@ -102,24 +102,59 @@ body {
 }
 
 .stage__desc {
-  max-width: 42ch;
+  max-width: 46ch;
   margin: 16px 0 0;
   font-size: 14px;
   line-height: 1.7;
   color: rgba(244, 236, 224, 0.55);
 }
 
-.stage__players {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 28px;
-  align-items: flex-start;
+.stage__desc code {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(246, 238, 226, 0.07);
+  font-size: 12.5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 360px));
+  gap: 56px 48px;
+  align-items: start;
+  justify-content: center;
   margin-top: 56px;
+}
+
+.cell {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.cell__cap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.cell__name {
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Songti SC', Georgia, serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: rgba(244, 236, 224, 0.92);
+}
+
+.cell__desc {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(244, 236, 224, 0.38);
 }
 
 .stage__panel {
   max-width: 520px;
-  margin-top: 44px;
+  margin-top: 56px;
   padding: 16px 18px;
   border: 1px solid rgba(246, 238, 226, 0.09);
   border-radius: 16px;
@@ -164,18 +199,5 @@ body {
 
 .stage__panel li.is-empty {
   color: rgba(244, 236, 224, 0.3);
-}
-
-.stage__hint {
-  margin-top: 32px;
-  font-size: 12px;
-  color: rgba(244, 236, 224, 0.4);
-}
-
-.stage__hint code {
-  padding: 1px 6px;
-  border-radius: 6px;
-  background: rgba(246, 238, 226, 0.07);
-  color: rgba(244, 236, 224, 0.7);
 }
 </style>

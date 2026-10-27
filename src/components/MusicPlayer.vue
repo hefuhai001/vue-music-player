@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<MusicPlayerProps>(), {
   muted: false,
   loop: 'list',
   showPlaylist: false,
-  theme: 'dark',
+  variant: 'modern',
   label: 'Now playing',
   accent: undefined,
 })
@@ -70,7 +70,7 @@ const {
 const playlistOpen = ref(props.showPlaylist)
 
 const rootClass = computed(() => [
-  `mp-player--${props.theme}`,
+  `mp-player--${props.variant}`,
   { 'is-playing': playing.value, 'is-loading': loading.value },
 ])
 
