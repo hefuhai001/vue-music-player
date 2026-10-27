@@ -4,6 +4,7 @@ import PlayerSlider from './PlayerSlider.vue'
 import PlayerPlaylist from './PlayerPlaylist.vue'
 import PlayerFullscreen from './PlayerFullscreen.vue'
 import { useAudioPlayer } from '../composables/useAudioPlayer'
+import { isAnalysableSource, useAudioAnalyser } from '../composables/useAudioAnalyser'
 import { clamp01, formatTime } from '../utils/format'
 import type { MusicPlayerProps, Track } from '../types'
 
@@ -121,6 +122,12 @@ function onSelectTrack(index: number) {
   selectTrack(index)
 }
 
+/* ----------------------------- 实时频谱 ----------------------------- */
+
+/** 播放列表存在跨域音源时不接入 Web Audio，避免被浏览器静音 */
+const canAnalyse = computed(() => tracks.value.every((track) => isAnalysableSource(track.src)))
+const spectrum = useAudioAnalyser(audioEl, { allow: () => canAnalyse.value })
+
 /* ----------------------------- 全屏模式 ----------------------------- */
 
 const fullscreenOpen = ref(false)
@@ -128,6 +135,11 @@ const fullscreenRef = ref<InstanceType<typeof PlayerFullscreen> | null>(null)
 
 async function enterFullscreen() {
   if (fullscreenOpen.value) return
+
+  // 在用户手势内建立音频分析链路，浏览器才允许 AudioContext 运行
+  spectrum.attach()
+  spectrum.resume()
+
   fullscreenOpen.value = true
   await nextTick()
 
@@ -441,6 +453,7 @@ defineExpose({
       :volume="volumeRatio"
       :muted="muted"
       :has-tracks="hasTracks"
+      :spectrum="spectrum"
       @close="exitFullscreen"
       @toggle="toggle"
       @prev="prev"

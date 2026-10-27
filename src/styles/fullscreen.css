@@ -78,6 +78,16 @@
   animation-play-state: running;
 }
 
+/* 接入真实频谱后，改由 JS 每帧写入 transform */
+.mp-fs__bars.is-live {
+  opacity: 0.5;
+}
+
+.mp-fs__bars.is-live i {
+  animation: none;
+  will-change: transform;
+}
+
 /* ---------------------------- 顶部信息 ---------------------------- */
 
 .mp-fs__head {
@@ -152,6 +162,21 @@
 
 .mp-fs.is-playing .mp-fs__ring {
   animation-play-state: running;
+}
+
+/* 真实频谱模式下，光环与封面辉光跟随低频能量律动 */
+.mp-fs.is-live .mp-fs__ring {
+  animation: none;
+  transform: scale(calc(1 + var(--mp-beat, 0) * 0.09));
+  opacity: calc(0.45 + var(--mp-beat, 0) * 0.55);
+  transition: transform 0.08s linear, opacity 0.08s linear;
+}
+
+.mp-fs.is-live .mp-fs__disc {
+  box-shadow:
+    0 40px 90px -40px rgba(0, 0, 0, 0.9),
+    0 0 calc(18px + var(--mp-beat, 0) * 62px) var(--mp-glow);
+  transition: box-shadow 0.08s linear;
 }
 
 .mp-fs__disc {

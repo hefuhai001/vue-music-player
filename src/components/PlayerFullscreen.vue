@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import PlayerSlider from './PlayerSlider.vue'
+import type { AudioAnalyserHandle } from '../composables/useAudioAnalyser'
 import type { PlayerVariant } from '../types'
 import { clamp01, formatTime } from '../utils/format'
 import { findLyricIndex, parseLyric } from '../utils/lrc'
@@ -27,6 +28,8 @@ const props = withDefaults(
     volume: number
     muted?: boolean
     hasTracks?: boolean
+    /** 实时频谱数据源；缺省或不可用时降级为 CSS 律动 */
+    spectrum?: AudioAnalyserHandle
   }>(),
   {
     variant: 'modern',
@@ -57,13 +60,79 @@ const emit = defineEmits<{
 const rootEl = ref<HTMLElement | null>(null)
 const lyricViewport = ref<HTMLElement | null>(null)
 
-/** 律动条：让每根柱子的周期与相位错开，看起来更自然 */
+/** 无频谱数据时的兜底律动：让每根柱子的周期与相位错开 */
 function barStyle(index: number) {
   return {
     '--i': index,
     animationDuration: `${(0.6 + ((index * 5) % 13) * 0.07).toFixed(2)}s`,
     animationDelay: `${(-((index % 17) + 1) * 0.08).toFixed(2)}s`,
   }
+}
+
+/* ---------------------------- 实时频谱律动 ---------------------------- */
+
+const BAR_COUNT = 56
+/** 每根柱子对应一段频段，用对数刻度映射，低频分辨率更高 */
+const barsEl = ref<HTMLElement | null>(null)
+const live = ref(false)
+const levels = new Float32Array(BAR_COUNT)
+
+let raf = 0
+let lastFrame = 0
+let beat = 0
+
+function renderSpectrum(now: number) {
+  raf = requestAnimationFrame(renderSpectrum)
+  if (now - lastFrame < 30) return
+  lastFrame = now
+
+  const bars = barsEl.value?.children
+  if (!bars) return
+
+  // 暂停时直接收敛到基线，避免残留电平
+  const bins = props.playing ? (props.spectrum?.read() ?? null) : null
+  const maxBin = bins ? Math.max(2, Math.floor(bins.length * 0.82)) : 0
+  let bass = 0
+
+  for (let i = 0; i < BAR_COUNT; i += 1) {
+    let target = 0
+
+    if (bins) {
+      const from = Math.max(1, Math.floor(maxBin ** (i / BAR_COUNT)))
+      const to = Math.max(from + 1, Math.floor(maxBin ** ((i + 1) / BAR_COUNT)))
+      let sum = 0
+      for (let b = from; b < to; b += 1) sum += bins[b]
+      const raw = sum / ((to - from) * 255)
+      // 轻微压缩动态范围：弱段不至于看不见，强段也不会一片顶满
+      target = raw < 0.04 ? 0 : raw ** 0.9
+    }
+
+    const prev = levels[i]
+    // 起振快、回落慢，鼓点更利落
+    const next = target > prev ? prev + (target - prev) * 0.5 : prev * 0.84
+    levels[i] = next
+
+    const node = bars[i] as HTMLElement | undefined
+    if (node) node.style.transform = `scaleY(${(0.06 + next * 0.94).toFixed(3)})`
+  }
+
+  if (bins) {
+    const limit = Math.min(8, bins.length)
+    for (let b = 1; b < limit; b += 1) bass += bins[b]
+    bass /= (limit - 1) * 255
+  }
+  beat = Math.max(bass, beat * 0.86)
+  rootEl.value?.style.setProperty('--mp-beat', Math.min(1, beat).toFixed(3))
+}
+
+function startSpectrum() {
+  if (raf || typeof window === 'undefined') return
+  raf = requestAnimationFrame(renderSpectrum)
+}
+
+function stopSpectrum() {
+  if (raf) cancelAnimationFrame(raf)
+  raf = 0
 }
 
 /* ------------------------------ 进度 ------------------------------ */
@@ -123,15 +192,40 @@ function onKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape') emit('close')
 }
 
+watch(
+  () => props.spectrum?.ready.value ?? false,
+  (isReady) => {
+    if (!isReady) return
+    live.value = true
+    startSpectrum()
+  },
+)
+
+watch(
+  () => props.playing,
+  (isPlaying) => {
+    if (isPlaying) props.spectrum?.resume()
+  },
+)
+
 onMounted(() => {
   prevBodyOverflow = document.body.style.overflow
   document.body.style.overflow = 'hidden'
   window.addEventListener('keydown', onKeydown)
   rootEl.value?.focus({ preventScroll: true })
+
+  const handle = props.spectrum
+  if (handle) {
+    handle.resume()
+    live.value = handle.attach() || handle.ready.value
+    if (live.value) startSpectrum()
+  }
+
   void nextTick(centerActiveLine)
 })
 
 onBeforeUnmount(() => {
+  stopSpectrum()
   document.body.style.overflow = prevBodyOverflow
   window.removeEventListener('keydown', onKeydown)
 })
@@ -144,7 +238,10 @@ defineExpose({ rootEl })
     <section
       ref="rootEl"
       class="mp-fs"
-      :class="[`mp-fs--${variant}`, { 'is-playing': playing, 'is-loading': loading }]"
+      :class="[
+        `mp-fs--${variant}`,
+        { 'is-playing': playing, 'is-loading': loading, 'is-live': live },
+      ]"
       role="dialog"
       aria-modal="true"
       :aria-label="`${title} 全屏播放`"
@@ -156,8 +253,8 @@ defineExpose({ rootEl })
           class="mp-fs__backdrop-img"
           :style="{ backgroundImage: `url(${cover})` }"
         />
-        <div class="mp-fs__bars">
-          <i v-for="n in 56" :key="n" :style="barStyle(n)" />
+        <div ref="barsEl" class="mp-fs__bars" :class="{ 'is-live': live }">
+          <i v-for="n in BAR_COUNT" :key="n" :style="barStyle(n)" />
         </div>
       </div>
 

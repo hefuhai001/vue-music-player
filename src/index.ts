@@ -7,9 +7,11 @@ import './styles/index.css'
 
 export { MusicPlayer, PlayerSlider, PlayerPlaylist, PlayerFullscreen }
 export { useAudioPlayer } from './composables/useAudioPlayer'
+export { isAnalysableSource, useAudioAnalyser } from './composables/useAudioAnalyser'
 export { findLyricIndex, parseLyric } from './utils/lrc'
 
 export type { AudioPlayer, UseAudioPlayerOptions } from './composables/useAudioPlayer'
+export type { AudioAnalyserHandle, UseAudioAnalyserOptions } from './composables/useAudioAnalyser'
 export type { LyricLine } from './utils/lrc'
 export type { LoopMode, MusicPlayerProps, PlayerVariant, Track } from './types'
 
