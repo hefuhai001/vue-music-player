@@ -1,0 +1,50 @@
+{
+  "name": "@xiaohe/vue-music-player",
+  "version": "0.1.0",
+  "description": "A themeable, headless-ish audio player component for Vue 3.",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "vue3",
+    "music-player",
+    "audio",
+    "component"
+  ],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit -p tsconfig.build.json && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.11",
+    "vite-plugin-dts": "^4.3.0",
+    "vue": "^3.5.13",
+    "vue-tsc": "^2.1.10"
+  }
+}
