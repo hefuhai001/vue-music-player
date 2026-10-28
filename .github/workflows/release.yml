@@ -1,10 +1,12 @@
 name: Release
 
-# 推一个 v* 标签即触发发布，例如：git tag v1.0.0 && git push origin v1.0.0
+# 推一个 v* 标签即触发发布，例如：git tag v1.0.0 && git push github v1.0.0
+# 也支持在 Actions 页面手动 Run workflow，用于发布失败后的重试
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 # contents: write 用于创建 GitHub Release
 # id-token: write 用于 npm provenance 签名
@@ -30,15 +32,29 @@ jobs:
           registry-url: https://registry.npmjs.org
           cache: npm
 
-      # 防止标签和 package.json 版本不一致导致发错版本
+      # 缺 token 时给出明确错误，而不是等到 publish 阶段才 401
+      - name: Check NPM_TOKEN
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "::error::仓库未配置 NPM_TOKEN secret，请在 Settings → Secrets and variables → Actions 中添加"
+            exit 1
+          fi
+
+      # 打标签发布时校验标签与版本一致；手动触发时跳过
       - name: Verify tag matches package.json
         run: |
           PKG_VERSION="$(node -p "require('./package.json').version")"
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          echo "package.json: ${PKG_VERSION} | tag: ${TAG_VERSION}"
-          if [ "${PKG_VERSION}" != "${TAG_VERSION}" ]; then
-            echo "::error::tag ${TAG_VERSION} 与 package.json 的 version ${PKG_VERSION} 不一致"
-            exit 1
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            echo "package.json: ${PKG_VERSION} | tag: ${TAG_VERSION}"
+            if [ "${PKG_VERSION}" != "${TAG_VERSION}" ]; then
+              echo "::error::tag ${TAG_VERSION} 与 package.json 的 version ${PKG_VERSION} 不一致"
+              exit 1
+            fi
+          else
+            echo "手动触发，跳过标签校验（当前版本 ${PKG_VERSION}）"
           fi
 
       - name: Install
@@ -56,6 +72,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
+        if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

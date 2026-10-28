@@ -80,6 +80,13 @@ git push github master --tags
 流水线会执行：`npm ci` → `typecheck` → `build` → 校验 tag 与 `package.json` 版本一致 →
 `npm publish --access public --provenance` → 创建 GitHub Release。
 
+### 重试与排错
+
+- 发布失败可在 `Actions → Release → Run workflow` 手动重跑，无需动标签。
+- 首次接入时的坑：如果工作流文件和 `v*` 标签是**同一次推送**进入仓库，GitHub 解析标签事件时默认分支上还没有该工作流，会直接跳过。此时删掉标签重新推一次即可：`git push github :refs/tags/v1.0.0 && git push github v1.0.0`。
+- `Publish` 步骤报 401/403：`NPM_TOKEN` 缺失、失效或没有该 scope 的发布权限。
+- `Publish` 步骤报 404：npm 上还没有创建 `@hefuhai001` scope。
+
 ### 注意事项
 
 - 标签与 `package.json` 版本不一致时流水线会直接失败，避免发错版本。
