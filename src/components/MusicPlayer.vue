@@ -50,6 +50,7 @@ const {
   setVolume,
   toggleMute,
   cycleLoopMode,
+  setLoopMode,
   selectTrack,
 } = useAudioPlayer({
   playlist: () => props.tracks,
@@ -204,6 +205,7 @@ defineExpose({
   setVolume,
   toggleMute,
   cycleLoopMode,
+  setLoopMode,
   selectTrack,
   fullscreenOpen,
   enterFullscreen,

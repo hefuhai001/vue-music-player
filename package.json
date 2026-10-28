@@ -1,16 +1,28 @@
 {
-  "name": "@xiaohe/vue-music-player",
+  "name": "@hefuhai001/vue-music-player",
   "version": "0.1.0",
-  "description": "A themeable, headless-ish audio player component for Vue 3.",
+  "description": "A themeable Vue 3 audio player component with four built-in skins: modern, retro, minimal and electronic.",
   "type": "module",
   "license": "MIT",
+  "author": "hefuhai001",
   "keywords": [
     "vue",
     "vue3",
     "music-player",
     "audio",
-    "component"
+    "audio-player",
+    "component",
+    "component-library",
+    "typescript"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hefuhai001/vue-music-player.git"
+  },
+  "homepage": "https://github.com/hefuhai001/vue-music-player#readme",
+  "bugs": {
+    "url": "https://github.com/hefuhai001/vue-music-player/issues"
+  },
   "files": [
     "dist"
   ],
@@ -29,6 +41,9 @@
   "sideEffects": [
     "**/*.css"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit -p tsconfig.build.json && vite build",
