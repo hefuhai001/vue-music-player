@@ -71,11 +71,22 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      # Release 说明优先取自 CHANGELOG.md 中对应版本的条目
+      - name: Extract release notes
+        if: github.ref_type == 'tag'
+        run: VERSION="${GITHUB_REF_NAME#v}" node scripts/release-notes.mjs || echo "未找到 CHANGELOG 条目，将回退到自动生成的说明"
+
       - name: Create GitHub Release
         if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
-            --title "${GITHUB_REF_NAME}" \
-            --generate-notes
+          if [ -f release-notes.md ]; then
+            gh release create "${GITHUB_REF_NAME}" \
+              --title "${GITHUB_REF_NAME}" \
+              --notes-file release-notes.md
+          else
+            gh release create "${GITHUB_REF_NAME}" \
+              --title "${GITHUB_REF_NAME}" \
+              --generate-notes
+          fi

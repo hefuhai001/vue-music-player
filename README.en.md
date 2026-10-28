@@ -210,6 +210,7 @@ Every visual parameter is a CSS variable and can be overridden on any ancestor e
 
 ## Links
 
+- Changelog → [CHANGELOG.md](https://github.com/hefuhai001/vue-music-player/blob/master/CHANGELOG.md)
 - Local development, project structure, releasing → [CONTRIBUTING.md](https://github.com/hefuhai001/vue-music-player/blob/master/CONTRIBUTING.md)
 - Issues → [GitHub](https://github.com/hefuhai001/vue-music-player/issues) / [Gitee](https://gitee.com/hefuhai001/vue-music-player/issues)
 

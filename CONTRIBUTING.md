@@ -71,10 +71,19 @@ npm run preview    # 预览构建产物
 # 1. 升版本号（同步 package-lock.json，不自动打 tag）
 npm version 1.0.0 --no-git-tag-version
 
-# 2. 提交、打标签、推送到 GitHub
+# 2. 在 CHANGELOG.md 顶部补该版本条目（GitHub Release 的说明直接取自这里）
+#    ## [1.0.0] - 2026-10-28
+
+# 3. 提交、打标签、推送到 GitHub
 git add -A && git commit -m "chore: release v1.0.0"
 git tag v1.0.0
 git push github master --tags
+```
+
+本地想预览 Release 说明：
+
+```bash
+VERSION=1.0.0 node scripts/release-notes.mjs && cat release-notes.md
 ```
 
 流水线会执行：`npm ci` → `typecheck` → `build` → 校验 tag 与 `package.json` 版本一致 →

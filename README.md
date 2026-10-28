@@ -210,6 +210,7 @@ const { playing, currentTime, duration, progress, toggle, next, seek } = useAudi
 
 ## 相关链接
 
+- 版本变更记录 → [CHANGELOG.md](https://github.com/hefuhai001/vue-music-player/blob/master/CHANGELOG.md)
 - 本地开发、目录结构、发布流程 → [CONTRIBUTING.md](https://github.com/hefuhai001/vue-music-player/blob/master/CONTRIBUTING.md)
 - 问题反馈 → [GitHub Issues](https://github.com/hefuhai001/vue-music-player/issues) / [Gitee Issues](https://gitee.com/hefuhai001/vue-music-player/issues)
 
