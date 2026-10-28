@@ -1,6 +1,6 @@
 {
   "name": "@hefuhai001/vue-music-player",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A themeable Vue 3 audio player component with four built-in skins: modern, retro, minimal and electronic.",
   "type": "module",
   "license": "MIT",
