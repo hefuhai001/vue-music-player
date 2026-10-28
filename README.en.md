@@ -23,6 +23,12 @@ A themeable audio player component for Vue 3. Four built-in skins, fullscreen pl
 npm install @hefuhai001/vue-music-player
 ```
 
+Or install a release straight from GitHub (replace `v1.0.0` with the version you need):
+
+```bash
+npm install github:hefuhai001/vue-music-player#v1.0.0
+```
+
 Requires Vue `>= 3.3`.
 
 ## Quick start

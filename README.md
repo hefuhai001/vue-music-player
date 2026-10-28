@@ -23,6 +23,12 @@
 npm install @hefuhai001/vue-music-player
 ```
 
+也可以直接安装 GitHub 上的发行版本（把 `v1.0.0` 换成需要的版本号）：
+
+```bash
+npm install github:hefuhai001/vue-music-player#v1.0.0
+```
+
 要求 Vue `>= 3.3`。
 
 ## 快速开始
