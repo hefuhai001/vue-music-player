@@ -84,7 +84,8 @@ git push github master --tags
 
 - 发布失败可在 `Actions → Release → Run workflow` 手动重跑，无需动标签。
 - 首次接入时的坑：如果工作流文件和 `v*` 标签是**同一次推送**进入仓库，GitHub 解析标签事件时默认分支上还没有该工作流，会直接跳过。此时删掉标签重新推一次即可：`git push github :refs/tags/v1.0.0 && git push github v1.0.0`。
-- `Publish` 步骤报 401/403：`NPM_TOKEN` 缺失、失效或没有该 scope 的发布权限。
+- `Publish` 步骤报 403 `Two-factor authentication or granular access token with bypass 2fa enabled is required`：token 有效但未开启 2FA 绕过。需在 npm 重新生成 **Granular Access Token** 并勾选 **Bypass 2FA**，然后更新仓库 secret。
+- `Publish` 步骤报 401：`NPM_TOKEN` 缺失、失效或没有该 scope 的发布权限。
 - `Publish` 步骤报 404：npm 上还没有创建 `@hefuhai001` scope。
 
 ### 注意事项
